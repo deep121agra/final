@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required,user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
-
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 # in a django in a user regestration form there is a two types of error is occured 
 # validation error(it occur when something wrong happend with a model) ,
@@ -27,7 +27,10 @@ def check_role_costumer(user):
     if user.role==2:
         return True
     else:
-        return PermissionDenied    
+        return PermissionDenied 
+#Then, apply this decorator to the function where you are encountering the error to check if the issue is resolved:
+
+@csrf_exempt       
 def registerUser(request):
     if request.user.is_authenticated:
         messages.warning(request,"you are already logged in !")
@@ -63,7 +66,7 @@ def registerUser(request):
     }
     
     return render(request, 'accounts/registerUser.html', context)
-
+@csrf_exempt  
 def registerVendor(request):
     if request.user.is_authenticated:
         messages.warning(request,"you are already logged in !")

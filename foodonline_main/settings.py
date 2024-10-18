@@ -26,7 +26,9 @@ SECRET_KEY = 'django-insecure-g**3s)(1@lr8bwa%!$149p-@&avz63hw$*=ide7#g%!+^jh&!&
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+codeMIDDLEWARE = [
+    'django.middleware.csrf.CsrfViewMiddleware',
+]
 
 # Application definition
 
@@ -146,8 +148,8 @@ MESSAGE_TAGS={
 # email configration
 EMAIL_HOST='smtp.gmail.com'
 EMAIL_PORT=587
-EMAIL_HOST_USER='kkkkkk'
-EMAIL_HOST_PASSWORD='kkkkkkkk'
+EMAIL_HOST_USER='kkkkkkk'
+EMAIL_HOST_PASSWORD='kkkkke'
 EMAIL_USE_TLS=True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
