@@ -90,8 +90,8 @@ class UserProfile(models.Model):
         upload_to='media/profile_picture', blank=True, null=True)
     cover_photo = models.ImageField(
         upload_to='media/cover_photo', blank=True, null=True)
-    adress_line1 = models.CharField(max_length=50, blank=True, null=True)
-    adress_line2 = models.CharField(max_length=50, blank=True, null=True)
+    adress = models.CharField(max_length=250, blank=True, null=True)
+    #adress_line2 = models.CharField(max_length=50, blank=True, null=True)
     country = models.CharField(max_length=50, blank=True, null=True)
     state = models.CharField(max_length=50, blank=True, null=True)
     city = models.CharField(max_length=14, blank=True, null=True)

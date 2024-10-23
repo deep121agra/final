@@ -45,3 +45,13 @@ def send_password_reset_email(request,user):
     to_email=user.email
     mail=EmailMessage(mail_subject,message,from_email,to=[to_email])
     mail.send()
+
+def send_notification(mail_subject,mail_template,context):
+    from_email=settings.DEFAULT_FROM_EMAIL  # IT IS A ONE VARIABLE WHIHC CAN HOLD DEFALULT HTML FROM A DJANGO
+    message=render_to_string(mail_template,context)
+    to_email=context['user'].email
+    mail=EmailMessage(mail_subject,message,from_email,to=[to_email])
+    mail.send()
+    
+
+

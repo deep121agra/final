@@ -14,6 +14,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.views.decorators.csrf import csrf_exempt
 #from django.contrib.auth.models import User
 from accounts.models import User
+from vendor.models import Vendor
 # Create your views here.
 # in a django in a user regestration form there is a two types of error is occured 
 # validation error(it occur when something wrong happend with a model) ,

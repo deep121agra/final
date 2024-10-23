@@ -1,0 +1,8 @@
+{% autoescape off %}
+ Hi {{user.first_name}}
+ {% if is_approved %}
+ Congratlairon the food is deliverd
+ {% else %}
+  we are soory for that you are not eligible for our terms and condition
+ {% endif %} 
+{% endautoescape %}
