@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% include 'include/alert.html' %}
+
+<div class='main-section'>
+    {% include 'include/cover.html' %}
+    <div class="page-section account-header buyer-logged-in">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    {% include 'include/v_sidebar.html' %}
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                    <div class="user-dashboard loader-holder">
+                        <div class="user-holder">
+                            <h5>Build Your food menu</h5>
+                            <hr>
+                            <h6>Category:   <span class="text-upper text-success">{{category}}</span></h6>
+                            <a href="#" class="btn btn-success float-right m-1">Add Food</a>
+                            <a href="{% url 'add_category' %}" class="btn btn-success float-right m-1">Add Category</a>
+                            {% if fooditems %}
+                            <table class="table table-hover table-bordered">
+                                
+                                <tbody>
+                                    {% for food in fooditems %}
+                                  <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td class="text-left"><img src="{{food.image.url}}" alt="Food image" width="40"></td>
+                                    <td class="text-left">
+                                        <a href="""><p class="md-0 font-weight-bold">{{ food }}</p>
+                                            <small class="text-muted">{{food.description}}</small>
+                                        </a>
+                                    </td>
+                                    <td><i class="fa fa-pencil" aria-hidden="true"></i>Edit Delete</td>
+                                  </tr>
+                                 {% endfor %}
+                                   
+                                </tbody>
+                              </table>
+                              {% else %}
+                              <h5 class="text-center">No items is found</h5>
+                              <div class="text-center">
+                                <a href="#" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Add fooditems</a>
+                              </div>
+
+                             {% endif %} 
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
