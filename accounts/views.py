@@ -15,6 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 #from django.contrib.auth.models import User
 from accounts.models import User
 from vendor.models import Vendor
+from django.template.defaultfilters import slugify
 # Create your views here.
 # in a django in a user regestration form there is a two types of error is occured 
 # validation error(it occur when something wrong happend with a model) ,
@@ -86,10 +87,12 @@ def registerVendor(request):
 
             vendor = v_form.save(commit=False)
             vendor.user = user
+            vendor_name=v_form.cleaned_data['vendor_name']
+            vendor.vendor_slug=slugify(vendor_name)+'-'+str(user.id)# it is used to make a slug unique
             user_profile = UserProfile.objects.get(user=user)  # Ensure correct model
             vendor.user_profile = user_profile
             vendor.save()
-            # after saving a verification it can help to send a verification to email fo comfirmation
+            # after saving a verification it can help to send a verification to email fo confirmation
             send_verification_email(request,user)
             messages.success(request, 'Your account has been registered successfully')
             return redirect(reverse('registerVendor'))
