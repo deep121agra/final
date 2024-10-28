@@ -37,43 +37,32 @@ def check_role_costumer(user):
 @csrf_exempt       
 def registerUser(request):
     if request.user.is_authenticated:
-        messages.warning(request,"you are already logged in !")
+        messages.warning(request, "You are already logged in!")
         return redirect('myAccount')
-    if request.method=='POST':
-        print(request.POST)
-        form=UserForm(request.POST)
+    if request.method == 'POST':
+        form = UserForm(request.POST)
         if form.is_valid():
-            password=form.cleaned_data['password']
-            user=form.save(commit=False)
+            password = form.cleaned_data['password']
+            user = form.save(commit=False)
             user.set_password(password)
-            user.role=User.CUSTOMER
+            user.role = User.CUSTOMER
             user.save()
-            #send_verification_email(request,user)
-            
-            #it is used to send a verification email it function mainly presnet in utils.py
-
             # Define mail_subject and email_template
             mail_subject = "Verify Your Account"
             email_template = "accounts/emails/account_verification_email.html"
-
-            
-            send_verification_email(request,user,mail_subject,email_template)
-            messages.success(request,'User created successfully')
+            send_verification_email(request, user, mail_subject, email_template)
+            messages.success(request, 'User created successfully')
             return redirect('registerUser')
         else:
-            print('invalid form')
-            print(form.errors)    # it is used to give a field error 
+            print('Invalid form')
+            print(form.errors)
     else:
-        form=UserForm()
-    context={
-        'form':form,
-    }
-    
+        form = UserForm()
+    context = {'form': form}
     return render(request, 'accounts/registerUser.html', context)
-@csrf_exempt  
 def registerVendor(request):
     if request.user.is_authenticated:
-        messages.warning(request,"you are already logged in !")
+        messages.warning(request, "You are already logged in!")
         return redirect('myAccount')
     if request.method == 'POST':
         form = UserForm(request.POST)
@@ -84,31 +73,29 @@ def registerVendor(request):
             user.set_password(password)
             user.role = User.VENDOR
             user.save()
-
             vendor = v_form.save(commit=False)
             vendor.user = user
-            vendor_name=v_form.cleaned_data['vendor_name']
-            vendor.vendor_slug=slugify(vendor_name)+'-'+str(user.id)# it is used to make a slug unique
-            user_profile = UserProfile.objects.get(user=user)  # Ensure correct model
+            vendor_name = v_form.cleaned_data['vendor_name']
+            vendor.vendor_slug = slugify(vendor_name) + '-' + str(user.id)
+            user_profile = UserProfile.objects.get(user=user)
             vendor.user_profile = user_profile
             vendor.save()
-            # after saving a verification it can help to send a verification to email fo confirmation
-            send_verification_email(request,user)
+            # Define mail_subject and email_template
+            mail_subject = "Verify Your Account"
+            email_template = "accounts/emails/account_verification_email.html"
+            send_verification_email(request, user, mail_subject, email_template)
             messages.success(request, 'Your account has been registered successfully')
             return redirect(reverse('registerVendor'))
         else:
             print('Invalid form')
-            print(form.errors)  # Field errors
+            print(form.errors)
             messages.error(request, 'There was an error with your submission.')
     else:
         form = UserForm()
         v_form = VendorForm()
-    
-    context = {
-        'form': form,
-        'v_form':v_form,
-    }
+    context = {'form': form, 'v_form': v_form}
     return render(request, 'accounts/registervendor.html', context)
+
 def activate(request, uidb64, token):
     # Activate the user by setting the is_active status to True
     try:
