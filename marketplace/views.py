@@ -1,5 +1,6 @@
+from datetime import date
 from django.shortcuts import render,get_object_or_404
-from vendor.models import Vendor
+from vendor.models import OpeningHour, Vendor
 from menu.models import Category,FoodItem
 from django.db.models import Prefetch
 from django.http import HttpResponse,JsonResponse
@@ -17,23 +18,55 @@ def marketplace(request):
   }
   return render(request,'marketplace/listings.html' ,context)
 
-def vendor_detail(request, vendor_slug):
-  vendor=get_object_or_404(Vendor,vendor_slug=vendor_slug)
-  categories=Category.objects.filter(vendor=vendor).prefetch_related(
-    Prefetch('fooditems',
-             queryset=FoodItem.objects.filter(is_available=True))
-  )# what the prefetch can do plese gpt it
-  if request.user.is_authenticated:
+# def vendor_detail(request, vendor_slug):
+#   vendor=get_object_or_404(Vendor,vendor_slug=vendor_slug)
+#   categories=Category.objects.filter(vendor=vendor).prefetch_related(
+#     Prefetch('fooditems',
+#              queryset=FoodItem.objects.filter(is_available=True))
+#   )# what the prefetch can do plese gpt it
+#   if request.user.is_authenticated:
       
-      cart_items = Cart.objects.filter(user=request.user)
-  else:
-      cart_items = None
-  context={
-    'vendor':vendor,
-    'categories':categories,
-    'cart_items':cart_items,
-  }
-  return render(request,'marketplace/vendor_detail.html' ,context)
+#       cart_items = Cart.objects.filter(user=request.user)
+#   else:
+#       cart_items = None
+#   context={
+#     'vendor':vendor,
+#     'categories':categories,
+#     'cart_items':cart_items,
+#   }
+#   return render(request,'marketplace/vendor_detail.html' ,context)
+
+
+def vendor_detail(request, vendor_slug):
+    vendor = get_object_or_404(Vendor, vendor_slug=vendor_slug)
+
+    categories = Category.objects.filter(vendor=vendor).prefetch_related(
+        Prefetch(
+            'fooditems',
+            queryset = FoodItem.objects.filter(is_available=True)
+        )
+    )
+
+    opening_hours = OpeningHour.objects.filter(vendor=vendor).order_by('day', 'from_hour')
+    
+    # Check current day's opening hours.
+    today_date = date.today()
+    today = today_date.isoweekday()
+    
+    current_opening_hours = OpeningHour.objects.filter(vendor=vendor, day=today)
+    if request.user.is_authenticated:
+        cart_items = Cart.objects.filter(user=request.user)
+    else:
+        cart_items = None
+    context = {
+        'vendor': vendor,
+        'categories': categories,
+        'cart_items': cart_items,
+        'opening_hours': opening_hours,
+        'current_opening_hours': current_opening_hours,
+    }
+    return render(request, 'marketplace/vendor_detail.html', context)
+
 
 
 def add_to_cart(request, food_id):
@@ -109,3 +142,8 @@ def delete_cart(request, cart_id):
                 return JsonResponse({'status': 'Failed', 'message': 'Cart Item does not exist!'})
         else:
             return JsonResponse({'status': 'Failed', 'message': 'Invalid request!'})        
+
+
+def search(request):
+    return render(request,'marketplace/listings.html')
+    vendors=Vendor.objects.filter(vendor_name__icontains)
