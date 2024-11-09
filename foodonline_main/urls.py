@@ -28,5 +28,7 @@ urlpatterns = [
     path('', include('accounts.urls')),
     path('cart/', MarketplaceViews.cart,name='cart'),
     path('marketplace/', include('marketplace.urls')),# isko use krne kei baaad markeplace url kei 
+    # path('checkout/', MarketplaceViews.checkout, name='checkout'),
+    path('checkout/', MarketplaceViews.checkout, name='checkout'),
                                  # sare url marketplace/krke chanlge lagenge
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

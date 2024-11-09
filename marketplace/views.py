@@ -1,12 +1,13 @@
 from datetime import date,datetime
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import redirect, render,get_object_or_404
+from accounts.models import UserProfile
 from vendor.models import OpeningHour, Vendor
 from menu.models import Category,FoodItem
 from django.db.models import Prefetch
 from django.http import HttpResponse,JsonResponse
 from .models import Cart
 from django.contrib.auth.decorators import login_required
-
+from orders.forms import OrderForm
 # Create your views here.
 
 def marketplace(request):
@@ -159,3 +160,31 @@ def delete_cart(request, cart_id):
 def search(request):
     return render(request,'marketplace/listings.html')
     vendors=Vendor.objects.filter(vendor_name__icontains)
+
+
+def checkout(request):
+    cart_items = Cart.objects.filter(user=request.user).order_by('created_at')
+    cart_count = cart_items.count()
+    if cart_count <= 0:
+        return redirect('marketplace')
+    
+    user_profile = UserProfile.objects.get(user=request.user)
+    default_values = {
+        'first_name': request.user.firstname,
+        'last_name': request.user.lastname,
+        'phone': request.user.phone_number,
+        'email': request.user.email,
+        'adress': user_profile.adress,
+        'country': user_profile.country,
+        'state': user_profile.state,
+        'city': user_profile.city,
+        'pin_code': user_profile.pin_code,
+    }
+    form = OrderForm(initial=default_values)
+    context = {
+        'form': form,
+        'cart_items': cart_items,
+    }
+    #form=OrderForm
+    context={'form':form}
+    return render(request, 'marketplace/checkout.html',context)
